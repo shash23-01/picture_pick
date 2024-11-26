@@ -2,17 +2,68 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Movie Suggestion</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedicineTime</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            padding: 20px;
+        }
+        h1 {
+            color: #5c67f2;
+            text-align: center;
+        }
+        .medicine-form, .medicine-list {
+            margin: 20px auto;
+            max-width: 400px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .medicine-form input, .medicine-form button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #5c67f2;
+            color: white;
+            cursor: pointer;
+        }
+        .medicine-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .medicine-item:last-child {
+            border-bottom: none;
+        }
+        .delete-btn {
+            color: red;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Movie Suggestion</h1>
-        <button id="suggestButton">Get Movie Suggestion</button>
-        <div id="movieInfo">
-            <h2 id="movieTitle">Movie Title</h2>
-            <p id="movieDescription">Movie description will appear here.</p>
-        </div>
+    <h1>MedicineTime</h1>
+    <div class="medicine-form">
+        <h2>Add Medication</h2>
+        <input type="text" id="medicineName" placeholder="Medicine Name">
+        <input type="text" id="dosage" placeholder="Dosage (e.g., 1 Tablet)">
+        <input type="time" id="time" placeholder="Reminder Time">
+        <button id="addMedicine">Add Medicine</button>
+    </div>
+    <div class="medicine-list">
+        <h2>Your Medications</h2>
+        <div id="medicineContainer"></div>
     </div>
     <script src="script.js"></script>
 </body>
