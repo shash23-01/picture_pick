@@ -1,37 +1,70 @@
-// Replace 'YOUR_RAPIDAPI_KEY' with your actual API key
-const API_KEY = 'c2cc718406msh35856e817c14e27p174b0fjsnb3be5b99000e';
-const API_URL = 'https://imdb188.p.rapidapi.com/api/v1/searchIMDB?query=%3CREQUIRED%3E';
+// Select DOM elements
+const medicineNameInput = document.getElementById('medicineName');
+const dosageInput = document.getElementById('dosage');
+const timeInput = document.getElementById('time');
+const addMedicineBtn = document.getElementById('addMedicine');
+const medicineContainer = document.getElementById('medicineContainer');
 
-document.getElementById('suggestButton').addEventListener('click', getSuggestedMovie);
+// Load medicines from localStorage
+let medicines = JSON.parse(localStorage.getItem('medicines')) || [];
 
-async function getSuggestedMovie() {
-    try {
-        const response = await fetch(`${API_URL}?q=random`, {
-            method: 'GET',
-            headers: {
-                'X-RapidAPI-Host': 'imdb188.p.rapidapi.com',
-                'X-RapidAPI-Key': API_KEY
-            }
-        });
+// Render medicines to the list
+function renderMedicines() {
+    medicineContainer.innerHTML = '';
+    medicines.forEach((medicine, index) => {
+        const div = document.createElement('div');
+        div.classList.add('medicine-item');
+        div.innerHTML = `
+            <div>
+                <strong>${medicine.name}</strong> - ${medicine.dosage} 
+                <small>(${medicine.time})</small>
+            </div>
+            <button class="delete-btn" onclick="deleteMedicine(${index})">Delete</button>
+        `;
+        medicineContainer.appendChild(div);
+    });
+}
 
-        if (response.ok) {
-            const data = await response.json();
-            if (data && data.d) {
-                const randomMovie = data.d[Math.floor(Math.random() * data.d.length)];
-                document.getElementById('movieTitle').textContent = randomMovie.l;
-                document.getElementById('movieDescription').textContent = randomMovie.s;
-            } else {
-                displayErrorMessage();
-            }
-        } else {
-            displayErrorMessage();
-        }
-    } catch (error) {
-        displayErrorMessage();
+// Add new medicine
+addMedicineBtn.addEventListener('click', () => {
+    const name = medicineNameInput.value.trim();
+    const dosage = dosageInput.value.trim();
+    const time = timeInput.value.trim();
+
+    if (name && dosage && time) {
+        medicines.push({ name, dosage, time });
+        localStorage.setItem('medicines', JSON.stringify(medicines));
+        renderMedicines();
+        // Clear input fields
+        medicineNameInput.value = '';
+        dosageInput.value = '';
+        timeInput.value = '';
+        // Set reminder notification
+        scheduleNotification(name, time);
+    } else {
+        alert('Please fill out all fields!');
+    }
+});
+
+// Delete medicine
+function deleteMedicine(index) {
+    medicines.splice(index, 1);
+    localStorage.setItem('medicines', JSON.stringify(medicines));
+    renderMedicines();
+}
+
+// Schedule notification
+function scheduleNotification(name, time) {
+    const now = new Date();
+    const reminderTime = new Date(`${now.toDateString()} ${time}`);
+    const delay = reminderTime - now;
+
+    if (delay > 0) {
+        setTimeout(() => {
+            alert(`Time to take your medicine: ${name}`);
+        }, delay);
     }
 }
 
-function displayErrorMessage() {
-    document.getElementById('movieTitle').textContent = 'An error occurred.';
-    document.getElementById('movieDescription').textContent = 'Please try again later.';
-}
+// Initial render
+renderMedicines();
